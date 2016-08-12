@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DE0C82FE-E236-43F7-82BF-DC0E2F6324A1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Xwt.Backends</RootNamespace>
+    <AssemblyName>Xwt.Backends</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xaml">
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Xwt\Distance.cs" />
+    <Compile Include="Xwt\Orientation.cs" />
+    <Compile Include="Xwt\Point.cs" />
+    <Compile Include="Xwt\Rectangle.cs" />
+    <Compile Include="Xwt\Size.cs" />
+    <Compile Include="Xwt\SizeConstraint.cs" />
+    <Compile Include="Xwt\WidgetSpacing.cs" />
+    <Compile Include="Xwt\XwtSynchronizationContext.cs" />
+    <Compile Include="Xwt.Backends\ApplicationContext.cs" />
+    <Compile Include="Xwt.Backends\BackendHandler.cs" />
+    <Compile Include="Xwt.Backends\DesktopBackend.cs" />
+    <Compile Include="Xwt.Backends\IBackend.cs" />
+    <Compile Include="Xwt.Backends\IChildPlacementHandler.cs" />
+    <Compile Include="Xwt.Backends\IMenuBackend.cs" />
+    <Compile Include="Xwt.Backends\IMenuItemBackend.cs" />
+    <Compile Include="Xwt.Backends\IWidgetBackend.cs" />
+    <Compile Include="Xwt.Backends\IWindowBackend.cs" />
+    <Compile Include="Xwt.Backends\IWindowFrameBackend.cs" />
+    <Compile Include="Xwt.Backends\ToolkitEngineBackend.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
