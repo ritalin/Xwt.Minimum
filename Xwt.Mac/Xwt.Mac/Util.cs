@@ -28,9 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Xwt.Backends;
-#if false
 using Xwt.Drawing;
-#endif
 
 #if MONOMAC
 using nfloat = System.Single;
@@ -57,7 +55,6 @@ namespace Xwt.Mac
 {
 	public static class Util
 	{
-#if false        
 		public static readonly string DeviceRGBString = NSColorSpace.DeviceRGB.ToString ();
 		static CGColorSpace deviceRGB, pattern;
 
@@ -68,6 +65,7 @@ namespace Xwt.Mac
 				return deviceRGB;
 			}
 		}
+#if false
 
 		public static CGColorSpace PatternColorSpace {
 			get {
@@ -86,16 +84,17 @@ namespace Xwt.Mac
 		{
 			return (double) v.Frame.Y;
 		}
-		
+#endif		
 		public static double WidgetWidth (this NSView v)
 		{
 			return (double) (v.Frame.Width);
 		}
-		
+
 		public static double WidgetHeight (this NSView v)
 		{
 			return (double) (v.Frame.Height);
 		}
+#if false       
 		
 		public static Rectangle WidgetBounds (this NSView v)
 		{
@@ -109,8 +108,8 @@ namespace Xwt.Mac
 				y = v.Superview.Frame.Height - y - (float)rect.Height;
 			v.Frame = new CGRect ((nfloat)rect.X, y, (nfloat)rect.Width, (nfloat)rect.Height);
 		}
-
-		public static Alignment ToAlignment (this NSTextAlignment align)
+#endif
+        public static Alignment ToAlignment (this NSTextAlignment align)
 		{
 			switch (align) {
 			case NSTextAlignment.Center: return Alignment.Center;
@@ -127,17 +126,19 @@ namespace Xwt.Mac
 			default: return NSTextAlignment.Left;
 			}
 		}
-		
-		public static NSColor ToNSColor (this Color col)
+
+        public static NSColor ToNSColor (this Color col)
 		{
 			return NSColor.FromDeviceRgba ((float)col.Red, (float)col.Green, (float)col.Blue, (float)col.Alpha);
 		}
 
-		static readonly CGColorSpace DeviceRgbColorSpace = CGColorSpace.CreateDeviceRGB ();
-		
-		public static CGColor ToCGColor (this Color col)
+#if false
+        static readonly CGColorSpace DeviceRgbColorSpace = CGColorSpace.CreateDeviceRGB ();
+#endif
+
+        public static CGColor ToCGColor (this Color col)
 		{
-			return new CGColor (DeviceRgbColorSpace, new nfloat[] {
+			return new CGColor (DeviceRGBColorSpace, new nfloat[] {
 				(nfloat)col.Red, (nfloat)col.Green, (nfloat)col.Blue, (nfloat)col.Alpha
 			});
 		}
@@ -147,7 +148,7 @@ namespace Xwt.Mac
 			col = col.UsingColorSpace (DeviceRGBString);
 			return new Color (col.RedComponent, col.GreenComponent, col.BlueComponent, col.AlphaComponent);
 		}
-		
+#if false		
 		public static Color ToXwtColor (this CGColor col)
 		{
 			var cs = col.Components;

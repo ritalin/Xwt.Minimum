@@ -25,9 +25,7 @@
 // THE SOFTWARE.
 
 using System;
-#if false
 using Xwt.Drawing;
-#endif
 
 namespace Xwt.Backends
 {
@@ -143,7 +141,7 @@ namespace Xwt.Backends
 		/// <value>The native widget.</value>
 		object NativeWidget { get; }
 
-        #if false
+#if false
         /// <summary>
         /// Starts a drag operation originated in this widget
         /// </summary>
@@ -176,21 +174,19 @@ namespace Xwt.Backends
         /// Bitmask of possible actions for a drop on this widget
         /// </param>
         void SetDragTarget (TransferDataType [] types, DragDropAction dragAction);
-		#endif
 		
 		/// <summary>
 		/// Gets or sets the native font of this widget.
 		/// </summary>
 		/// <value>The font.</value>
 		object Font { get; set; }
+#endif
 
-        #if false
         /// <summary>
         /// Gets or sets the background color of this widget.
         /// </summary>
         /// <value>The background color.</value>
         Color BackgroundColor { get; set; }
-		#endif
 
 		/// <summary>
 		/// Gets or sets the tooltip text.
@@ -198,7 +194,6 @@ namespace Xwt.Backends
 		/// <value>The tooltip text.</value>
 		string TooltipText { get; set; }
 
-        #if false
         /// <summary>
         /// Sets the cursor shape to be used when the mouse is over the widget
         /// </summary>
@@ -206,7 +201,6 @@ namespace Xwt.Backends
         /// The cursor type.
         /// </param>
         void SetCursor (CursorType cursorType);
-		#endif
 	}
 	
 	/// <summary>
@@ -305,6 +299,7 @@ namespace Xwt.Backends
         /// </summary>
         /// <param name="args">The text input arguments.</param>
         void OnTextInput (TextInputEventArgs args);
+#endif
 
         /// <summary>
         /// Notifies the frontend that the widget has received the focus.
@@ -316,6 +311,7 @@ namespace Xwt.Backends
         /// </summary>
         void OnLostFocus ();
 
+        #if false
         /// <summary>
         /// Notifies the frontend that the mouse has entered the widget.
         /// </summary>
@@ -368,6 +364,7 @@ namespace Xwt.Backends
         /// optionally.
         /// </remarks>
         Size GetPreferredSize (SizeConstraint widthConstraint = default (SizeConstraint), SizeConstraint heightConstraint = default (SizeConstraint));
+#endif
 
         /// <summary>
         /// Notifies the frontend that the preferred size of this widget has changed
@@ -383,6 +380,7 @@ namespace Xwt.Backends
         /// </remarks>
         void OnPreferredSizeChanged ();
 
+        #if false
         /// <summary>
         /// Gets a value indicating whether the frontend supports custom scrolling.
         /// </summary>
@@ -415,7 +413,225 @@ namespace Xwt.Backends
 		#endif
 	}
 
-	
+    namespace WidgetEventSink
+    {
+        public class Default : IWidgetEventSink
+        {
+#if false
+        /// <summary>
+        /// Notifies the frontend that the mouse is moved over the widget in a drag operation,
+        /// to check whether a drop operation is allowed.
+        /// </summary>
+        /// <param name="args">The drag over check event arguments.</param>
+        /// <remarks>
+        /// This event handler provides information about the type of the data that is going
+        /// to be dropped, but not the actual data.
+        /// The frontend decides which of the proposed actions will be performed when
+        /// the item is dropped by setting <see cref="Xwt.DragOverCheckEventArgs.AllowedAction"/>.
+        /// If the value is not set or it is set to <see cref="Xwt.DragDropAction.Default"/>,
+        /// the action data should be provided using <see cref="OnDragOver"/>. If the proposed action
+        /// is not allowed, the backend should not allow the user to perform the drop action.
+        /// </remarks>
+        void OnDragOverCheck (DragOverCheckEventArgs args);
+
+        /// <summary>
+        /// Notifies the frontend that the mouse is moved over the widget in a drag operation,
+        /// to check whether a drop operation is allowed for the data being dragged.
+        /// </summary>
+        /// <param name="args">The drag over event arguments.</param>
+        /// <remarks>
+        /// This event handler provides information about the actual data that is going to be dropped. 
+        /// The frontend decides which of the proposed actions will be performed when the
+        /// item is dropped by setting <see cref="Xwt.DragOverEventArgs.AllowedAction"/>. If the proposed action
+        /// is not allowed, the backend should not perform the drop action.
+        /// </remarks>
+        void OnDragOver (DragOverEventArgs args);
+
+        /// <summary>
+        /// Notifies the frontend that there is a pending drop operation, to check whether it is allowed.
+        /// </summary>
+        /// <param name="args">The drop check event arguments.</param>
+        /// <remarks>
+        /// This event handler provides information about the type of the data that is going
+        /// to be dropped, but not the actual data. The frontend decides whether the action
+        /// is allowed or not by setting <see cref="Xwt.DragCheckEventArgs.Result"/>.
+        /// The backend should abort the drop operation, if the result is <see cref="Xwt.DragDropResult.Canceled"/>,
+        /// or provide more information including actual data using <see cref="OnDragDrop"/> otherwise.
+        /// </remarks>
+        void OnDragDropCheck (DragCheckEventArgs args);
+
+        /// <summary>
+        /// Notifies the frontend of a drop operation to perform.
+        /// </summary>
+        /// <param name="args">The drop event arguments.</param>
+        /// <remarks>
+        /// This event handler provides information about the dropped data and the actual data.
+        /// The frontend will set <see cref="Xwt.DragEventArgs.Success"/> to <c>true</c> when the drop
+        /// was successful, <c>false</c> otherwise.
+        /// </remarks>
+        void OnDragDrop (DragEventArgs args);
+
+        /// <summary>
+        /// Notifies the frontend that the mouse is leaving the widget in a drag operation.
+        /// </summary>
+        void OnDragLeave (EventArgs args);
+
+        /// <summary>
+        /// Notifies the frontend that the drag&amp;drop operation has finished.
+        /// </summary>
+        /// <param name="args">The event arguments.</param>
+        void OnDragFinished (DragFinishedEventArgs args);
+
+        /// <summary>
+        /// Notifies the frontend about a starting drag operation and retrieves the data for the drag&amp;drop operation.
+        /// </summary>
+        /// <returns>
+        /// The information about the starting drag operation and the data to be transferred,
+        /// or <c>null</c> to abort dragging.
+        /// </returns>
+        DragStartData OnDragStarted ();
+
+        /// <summary>
+        /// Notifies the frontend that a key has been pressed.
+        /// </summary>
+        /// <param name="args">The Key arguments.</param>
+        void OnKeyPressed (KeyEventArgs args);
+
+        /// <summary>
+        /// Notifies the frontend that a key has been released.
+        /// </summary>
+        /// <param name="args">The Key arguments.</param>
+        void OnKeyReleased (KeyEventArgs args);
+
+        /// <summary>
+        /// Notifies the frontend that a text has been entered.
+        /// </summary>
+        /// <param name="args">The text input arguments.</param>
+        void OnTextInput (TextInputEventArgs args);
+#endif
+
+            /// <summary>
+            /// Notifies the frontend that the widget has received the focus.
+            /// </summary>
+            public void OnGotFocus ()
+            {
+
+            }
+
+            /// <summary>
+            /// Notifies the frontend that the widget has lost the focus.
+            /// </summary>
+            public void OnLostFocus ()
+            {
+
+            }
+
+#if false
+        /// <summary>
+        /// Notifies the frontend that the mouse has entered the widget.
+        /// </summary>
+        void OnMouseEntered ();
+
+        /// <summary>
+        /// Notifies the frontend that the mouse has left the widget.
+        /// </summary>
+        void OnMouseExited ();
+
+        /// <summary>
+        /// Notifies the frontend that a mouse button has been pressed.
+        /// </summary>
+        /// <param name="args">The button arguments.</param>
+        void OnButtonPressed (ButtonEventArgs args);
+
+        /// <summary>
+        /// Notifies the frontend that a mouse button has been released.
+        /// </summary>
+        /// <param name="args">The button arguments.</param>
+        void OnButtonReleased (ButtonEventArgs args);
+
+        /// <summary>
+        /// Notifies the frontend that the mouse has moved.
+        /// </summary>
+        /// <param name="args">The mouse movement arguments.</param>
+        void OnMouseMoved (MouseMovedEventArgs args);
+
+        /// <summary>
+        /// Notifies the frontend that the widget bounds have changed.
+        /// </summary>
+        void OnBoundsChanged ();
+
+        /// <summary>
+        /// Notifies the frontend about a scroll action.
+        /// </summary>
+        /// <param name="args">The mouse scrolled arguments.</param>
+        void OnMouseScrolled (MouseScrolledEventArgs args);
+
+        /// <summary>
+        /// Gets the preferred size from the frontend (it will not include the widget margin).
+        /// </summary>
+        /// <returns>The size preferred by the frontend without widget margin.</returns>
+        /// <param name="widthConstraint">The width constraint.</param>
+        /// <param name="heightConstraint">The height constraint.</param>
+        /// <remarks>
+        /// The returned size is >= 0. If a constraint is specified, the returned size will not
+        /// be bigger than the constraint. In most cases the frontend will retrieve the preferred size
+        /// from the backend using <see cref="Xwt.Backends.IWidgetBackend.GetPreferredSize"/> and adjust it
+        /// optionally.
+        /// </remarks>
+        Size GetPreferredSize (SizeConstraint widthConstraint = default (SizeConstraint), SizeConstraint heightConstraint = default (SizeConstraint));
+#endif
+
+            /// <summary>
+            /// Notifies the frontend that the preferred size of this widget has changed
+            /// </summary>
+            /// <remarks>
+            /// This method must be called when the widget changes its preferred size.
+            /// This method doesn't need to be called if the resize is the result of changing
+            /// a widget property. For example, it is not necessary to call it when the text
+            /// of a label is changed (the fronted will automatically rise this event when
+            /// the property changes). However, it has to be called when the the shape of the
+            /// widget changes on its own, for example if the size of a button changes as
+            /// a result of clicking on it.
+            /// </remarks>
+            public void OnPreferredSizeChanged ()
+            {
+
+            }
+
+#if false
+        /// <summary>
+        /// Gets a value indicating whether the frontend supports custom scrolling.
+        /// </summary>
+        /// <returns><c>true</c>, if custom scrolling is supported, <c>false</c> otherwise.</returns>
+        /// <remarks>
+        /// If the frontend supports custom scrolling, the backend must set the scroll adjustments
+        /// using <see cref="SetScrollAdjustments"/> to allow the frontend to handle scrolling.
+        /// </remarks>
+        bool SupportsCustomScrolling ();
+
+        /// <summary>
+        /// Sets the scroll adjustments for custom scrolling.
+        /// </summary>
+        /// <param name="horizontal">The horizontal adjustment backend.</param>
+        /// <param name="vertical">The vertical adjustment backend.</param>
+        void SetScrollAdjustments (IScrollAdjustmentBackend horizontal, IScrollAdjustmentBackend vertical);
+
+        /// <summary>
+        /// Gets the default natural size of the widget
+        /// </summary>
+        /// <returns>
+        /// The default natural size.
+        /// </returns>
+        /// <remarks>
+        /// This method should only be used if there isn't a platform-specific natural
+        /// size for the widget. There may be widgets for which XWT can't provide
+        /// a default natural width or height, in which case it return 0.
+        /// </remarks>
+        Size GetDefaultNaturalSize ();
+#endif        
+        }
+    }
+
 	/// <summary>
 	/// Event identifiers supported by all Xwt widgets to subscribe to
 	/// </summary>

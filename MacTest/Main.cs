@@ -3,6 +3,7 @@ using Xwt.Mac;
 using Xwt.Backends;
 using System.Threading;
 using Xwt;
+using Xwt.Drawing;
 
 namespace Project1
 {
@@ -23,7 +24,13 @@ namespace Project1
 
             wb.SetSize (600, 400);
 
+            ComposeLabel (ctx, wb);
             PopulateMenu (ctx, wb);
+
+            wb.EventSink.OnShown.Register (e => {
+                // As Visible property is true, fired.
+                return;
+            });
 
             wb.Visible = true;
 
@@ -34,6 +41,16 @@ namespace Project1
             wb.Dispose ();
 
             engine.Dispose ();
+        }
+
+        private static void ComposeLabel(ApplicationContext ctx, IWindowBackend wb) {
+            ILabelBackend label = new LabelBackend ();
+            label.InitializeBackend (null, ctx);
+            label.Initialize (new Xwt.Backends.WidgetEventSink.Default());
+
+            label.Text = "Hello minimum xwt";
+            label.BackgroundColor = Colors.LightSkyBlue;
+            wb.SetChild (label);
         }
 
         private static void PopulateMenu(ApplicationContext ctx, IWindowBackend wb) {

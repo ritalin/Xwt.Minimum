@@ -53,6 +53,14 @@
     <Compile Include="Xwt.Backends\IWindowBackend.cs" />
     <Compile Include="Xwt.Backends\IWindowFrameBackend.cs" />
     <Compile Include="Xwt.Backends\ToolkitEngineBackend.cs" />
+    <Compile Include="Xwt.Backends\ILabelBackend.cs" />
+    <Compile Include="Xwt\Alignment.cs" />
+    <Compile Include="Xwt\WrapMode.cs" />
+    <Compile Include="Xwt\EllipsizeMode.cs" />
+    <Compile Include="Xwt.Drawing\Color.cs" />
+    <Compile Include="Xwt.Drawing\HslColor.cs" />
+    <Compile Include="Xwt\CursorType.cs" />
+    <Compile Include="Xwt.Drawing\Colors.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

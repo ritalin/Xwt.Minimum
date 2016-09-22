@@ -49,11 +49,11 @@ namespace Xwt.Backends
 
         public void Register (Action<TArgsType> action)
         {
-            this.actions.Add (action);
-
             if ((! this.actions.Skip(1).Any ()) && (this.Enabled != null)) {
                 this.Enabled ();
             }
+
+            this.actions.Add (action);
         }
 
         public void Unregister (Action<TArgsType> action)

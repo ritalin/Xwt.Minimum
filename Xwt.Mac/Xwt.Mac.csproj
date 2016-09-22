@@ -70,6 +70,10 @@
     <Compile Include="Xwt.Mac\ObjcHelper.cs" />
     <Compile Include="Xwt.Mac\Util.cs" />
     <Compile Include="Xwt.Mac\WindowBackend.cs" />
+    <Compile Include="Xwt.Mac\LabelBackend.cs" />
+    <Compile Include="Xwt.Mac\ViewBackend.cs" />
+    <Compile Include="Xwt.Mac\IViewObject.cs" />
+    <Compile Include="Xwt.Mac\WidgetView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Xwt.Backends\Xwt.Backends.csproj">

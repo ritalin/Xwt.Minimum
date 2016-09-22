@@ -54,11 +54,11 @@ namespace Xwt.Mac
 	{
 		WindowBackendController controller;
 		IWindowFrameEventSink eventSink;
-        #if false
+#if DEPLECATED
         ViewBackend child;
-#endif
         NSView childView;
-		bool sensitive = true;
+#endif
+        bool sensitive = true;
 
         AppDelegate app;
 
@@ -90,8 +90,8 @@ namespace Xwt.Mac
 			get { return Handle; }
 		}
 
-		public IWindowFrameEventSink EventSink {
-			get { return (IWindowFrameEventSink)eventSink; }
+		public IWindowFrameEventSink EventSink { 
+			get { return eventSink; }
 		}
 
 		public virtual void InitializeBackend (object frontend, ApplicationContext context)
@@ -407,13 +407,39 @@ namespace Xwt.Mac
 			});
 		}
 
+        private bool TryGetChiledView (out NSView outView)
+        {
+            if (this.ContentView.Subviews.Length == 0) {
+                outView = null;
+                return false;
+            } else {
+                outView = this.ContentView.Subviews [0];
+                return true;
+            }
+        }
+
 		void IWindowBackend.SetChild (IWidgetBackend child)
 		{
-            #if false
-            if (this.child != null) {
+            NSView subView;
+            if (this.TryGetChiledView(out subView)) {
+                subView.RemoveFromSuperview();
+            }
+
+            if (child != null) {
+                var obj = child as IViewObject;
+                Debug.Assert (obj != null);
+
+                this.ContentView.AddSubview (obj.View);
+                this.LayoutWindow ();
+                obj.View.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
+            }
+
+
+#if DEPLECATED
+            if (child != null) {
                 ViewBackend.RemoveChildPlacement (this.child.Widget);
-                this.child.Widget.RemoveFromSuperview ();
-                childView = null;
+                child.Widget.RemoveFromSuperview ();
+                this.childView = null;
             }
             this.child = (ViewBackend)child;
             if (child != null) {
@@ -422,8 +448,10 @@ namespace Xwt.Mac
                 LayoutWindow ();
                 childView.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
             }
-			#endif
-		}
+#endif
+
+
+        }
 		
 		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
 		{
@@ -581,15 +609,17 @@ namespace Xwt.Mac
 		
         public void LayoutContent (CGRect frame, WidgetSpacing padding)
 		{
-            #if false
-            if (child != null) {
+            NSView subView;
+            if (this.TryGetChiledView(out subView)) {
                 frame.X += (nfloat)padding.Left;
                 frame.Width -= (nfloat)(padding.HorizontalSpacing);
                 frame.Y += (nfloat)padding.Top;
                 frame.Height -= (nfloat)(padding.VerticalSpacing);
+                subView.Frame = frame;
+#if DEPLECATED
                 childView.Frame = frame;
+#endif
             }
-			#endif
 		}
 	}
 	
