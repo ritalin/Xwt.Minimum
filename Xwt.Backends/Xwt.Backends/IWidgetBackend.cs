@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using Xwt.Drawing;
 
 namespace Xwt.Backends
@@ -92,6 +93,8 @@ namespace Xwt.Backends
 		/// <value>The size.</value>
 		Size Size { get; }
 
+        void AddChild (IWidgetBackend child);
+
 		/// <summary>
 		/// Converts widget relative coordinates to screen coordinates.
 		/// </summary>
@@ -110,17 +113,30 @@ namespace Xwt.Backends
 		/// </param>
 		void SetMinSize (double width, double height);
 
-		/// <summary>
-		/// Sets the size request / natural size of this widget.
-		/// </summary>
-		/// <param name="width">Natural width, or -1 if no custom natural width has been set.</param>
-		/// <param name="height">Natural height, or -1 if no custom natural height has been set.</param>
-		void SetSizeRequest (double width, double height);
-		
-		/// <summary>
-		/// Sets the focus on this widget.
-		/// </summary>
-		void SetFocus ();
+#if false
+        /// <summary>
+        /// Sets the size request / natural size of this widget.
+        /// </summary>
+        /// <param name="width">Natural width, or -1 if no custom natural width has been set.</param>
+        /// <param name="height">Natural height, or -1 if no custom natural height has been set.</param>
+        void SetSizeRequest (double width, double height);
+#endif
+        /// <summary>
+        /// Sets the bounds request of this widget.
+        /// </summary>
+        /// <param name="bounds">Natural bounds.</param>
+        void SetBoundsRequest (Rectangle bounds);
+
+        /// <summary>
+        /// Reallangement this widget layout.
+        /// </summary>
+        /// <param name="bounds">Natural bounds.</param>
+        void Reallocate (Rectangle bounds);
+
+        /// <summary>
+        /// Sets the focus on this widget.
+        /// </summary>
+        void SetFocus ();
 		
 		/// <summary>
 		/// Updates the layout of this widget.
@@ -141,6 +157,7 @@ namespace Xwt.Backends
 		/// <value>The native widget.</value>
 		object NativeWidget { get; }
 
+        IEnumerable<IWidgetBackend> Children { get; }
 #if false
         /// <summary>
         /// Starts a drag operation originated in this widget
@@ -203,6 +220,19 @@ namespace Xwt.Backends
         void SetCursor (CursorType cursorType);
 	}
 	
+    public enum VerticalOrigin { Top, Bottom }
+    public enum HorizontalOrigin { Left, Right }
+    public struct Origin {
+        public VerticalOrigin Vertical { get; private set; }
+        public HorizontalOrigin Horizonta { get; private set; }
+
+        public Origin(VerticalOrigin v = VerticalOrigin.Top, HorizontalOrigin h = HorizontalOrigin.Left) 
+        {
+            this.Vertical = v;
+            this.Horizonta = h;
+        }
+    }
+
 	/// <summary>
 	/// The widget event sink routes backend events to the frontend
 	/// </summary>

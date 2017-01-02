@@ -16,19 +16,39 @@ namespace Project1
 
             ApplicationContext ctx = new ApplicationContext (engine, Thread.CurrentThread);
 
-            IWindowBackend wb = new WindowBackend ();
+            ICanvasBackend container = new CanvasBackend ();
+            container.InitializeBackend (null, ctx);
+            container.Initialize (null);
+            container.BackgroundColor = Colors.Blue;
+
+            IWindowBackend wb = new WindowBackend (container as IViewObject);
             wb.InitializeBackend (null, ctx);
 
             // Connecting to event sink
             wb.Initialize (new Xwt.Backends.WindowFrameEventSink.Default ());
 
+            wb.BackgroundColor = Colors.Red;
             wb.SetSize (600, 400);
 
-            ComposeLabel (ctx, wb);
+            // TODO: 親の原点と子の矩型領域から、レイアウト制約を決定する
+
+            ICanvasBackend canvas = new CanvasBackend ();
+            canvas.InitializeBackend (null, ctx);
+            canvas.Initialize (null);
+            canvas.BackgroundColor = Colors.Lime;
+            canvas.SetBoundsRequest (new Rectangle (16, 16, 568, 368));
+            container.AddChild (canvas);
+
+            // --
+
+            ComposeLabel (ctx, canvas);
             PopulateMenu (ctx, wb);
 
             wb.EventSink.OnShown.Register (e => {
                 // As Visible property is true, fired.
+                return;
+            });
+            wb.EventSink.OnBoundsChanged.Register (e => {
                 return;
             });
 
@@ -43,14 +63,15 @@ namespace Project1
             engine.Dispose ();
         }
 
-        private static void ComposeLabel(ApplicationContext ctx, IWindowBackend wb) {
+        private static void ComposeLabel(ApplicationContext ctx, IWidgetBackend contaner) {
             ILabelBackend label = new LabelBackend ();
             label.InitializeBackend (null, ctx);
             label.Initialize (new Xwt.Backends.WidgetEventSink.Default());
 
             label.Text = "Hello minimum xwt";
             label.BackgroundColor = Colors.LightSkyBlue;
-            wb.SetChild (label);
+            label.SetBoundsRequest (new Rectangle (8, 8, 400, 30));
+            contaner.AddChild (label);
         }
 
         private static void PopulateMenu(ApplicationContext ctx, IWindowBackend wb) {

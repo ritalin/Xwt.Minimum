@@ -67,45 +67,56 @@ namespace Xwt.Mac
 		}
 	}
 
-	public abstract class ViewBackend: IWidgetBackend, IViewObject
-	{
+    public abstract class ViewBackend : NSViewController, IWidgetBackend, IViewObject, IDisposable
+    {
 #if false
         Widget frontend;
 #endif
         IWidgetEventSink eventSink;
-		IViewObject viewObject;
-		WidgetEvent currentEvents;
-		bool autosize;
-		Size lastFittingSize;
-		bool sizeCalcPending = true;
-		bool sensitive = true;
-		bool canGetFocus = true;
-		Xwt.Drawing.Color backgroundColor;
+        IViewObject viewObject;
+        WidgetEvent currentEvents;
+        WeakReference<IViewObject> parentBackend;
+        bool autosize;
+        Size lastFittingSize;
+        bool sizeCalcPending = true;
+        bool sensitive = true;
+        bool canGetFocus = true;
+        bool disposed;
+        Xwt.Drawing.Color backgroundColor;
+        Rectangle requestBounds = new Rectangle (0, 0, -1, -1);
+        IDictionary<NSView, IViewObject> backendLookup = new Dictionary<NSView, IViewObject> ();
 
-		void IBackend.InitializeBackend (object frontend, ApplicationContext context)
-		{
-			ApplicationContext = context;
-            #if false
+        // TODO: ILayoutConfigurationを介してレイアウト制約を保持・取得する
+        // TODO: 制約一括更新メソッドを用意し、コールバックで構成させる
+        // TODO: 仮想ビューの組み込みを検討する
+
+        IDictionary<NSLayoutAttribute, NSLayoutConstraint> constraintCache =
+            new Dictionary<NSLayoutAttribute, NSLayoutConstraint> ();
+        
+        void IBackend.InitializeBackend (object frontend, ApplicationContext context)
+        {
+            ApplicationContext = context;
+#if false
             this.frontend = (Widget)frontend;
 #endif
         }
-		
-		void IWidgetBackend.Initialize (IWidgetEventSink sink)
-		{
-			eventSink = (IWidgetEventSink) sink;
-			Initialize ();
-			ResetFittingSize ();
-            canGetFocus = Widget.AcceptsFirstResponder ();
-		}
 
-        protected void InitializeViewObject(IViewObject view) {
+        void IWidgetBackend.Initialize (IWidgetEventSink sink)
+        {
+            eventSink = sink;
+            Initialize ();
+            ResetFittingSize ();
+        }
+
+        protected void InitializeViewObject (IViewObject view)
+        {
             Debug.Assert (view != null);
 
             viewObject = view;
             viewObject.Backend = this;
         }
 
-        #if false
+#if false
         /// <summary>
         /// To be called when the widget is a root and is not inside a Xwt window. For example, when it is in a popover or a tooltip
         /// In that case, the widget has to listen to the change event of the children and resize itself
@@ -116,16 +127,16 @@ namespace Xwt.Mac
             if (autosize)
                 AutoUpdateSize ();
         }
-		#endif
+#endif
 
-		
-		public virtual void Initialize ()
-		{
-		}
-		
-		public IWidgetEventSink EventSink {
-			get { return eventSink; }
-		}
+
+        public virtual void Initialize ()
+        {
+        }
+
+        public IWidgetEventSink EventSink {
+            get { return eventSink; }
+        }
 
 #if false
         public Widget Frontend {
@@ -133,19 +144,44 @@ namespace Xwt.Mac
                 return this.frontend;
             }
         }
-		#endif
-		
-		public ApplicationContext ApplicationContext {
-			get;
-			private set;
-		}
-		
-		public object NativeWidget {
-			get {
-				return Widget;
-			}
-		}
-		
+#endif
+
+        public ApplicationContext ApplicationContext {
+            get;
+            private set;
+        }
+
+        public object NativeWidget {
+            get {
+                return Widget;
+            }
+        }
+
+        public IEnumerable<IWidgetBackend> Children 
+        {
+            get {
+                return this.GetChildViewObjects().Select(v => v.Backend);
+            }
+        }
+
+        IEnumerable<IViewObject> GetChildViewObjects()
+        {
+            return this.View.Subviews
+                       .Where(v => backendLookup.ContainsKey(v))
+                       .Select (v => backendLookup [v]);
+        }
+
+        void IWidgetBackend.AddChild(IWidgetBackend child) 
+        {
+            var v = child as IViewObject;
+            Debug.Assert (v != null);
+
+            v.Backend.parentBackend = new WeakReference<IViewObject> (this);
+            this.View.AddSubview (v.Backend.View);
+
+            backendLookup.Add (v.Backend.View, v);
+        }
+
 		public NSView Widget {
 			get { return viewObject.View; }
 		}
@@ -161,7 +197,34 @@ namespace Xwt.Mac
         }
 		#endif
 
-        NSView IViewObject.View { 
+        public override void ViewDidLoad () 
+        {
+            base.ViewDidLoad ();
+
+            canGetFocus = this.View.AcceptsFirstResponder ();
+
+            this.View.TranslatesAutoresizingMaskIntoConstraints = false;
+        }
+
+        public override void ViewDidLayout () 
+        {
+            base.ViewDidLayout ();
+        }
+
+        public override void ViewWillAppear () 
+        {
+            base.ViewWillAppear ();
+
+            this.Reallocate (requestBounds);
+        }
+
+        public override void ViewDidAppear ()
+        {
+            base.ViewDidAppear ();
+        }
+
+        NSView IViewObject.View 
+        { 
             get { 
                 return viewObject.View; 
             } 
@@ -286,26 +349,34 @@ namespace Xwt.Mac
 			Dispose (false);
 		}
 		
-		public void Dispose ()
+		void IDisposable.Dispose ()
 		{
 			GC.SuppressFinalize (this);
 			Dispose (true);
+
+            base.Dispose ();
 		}
-		
-		protected virtual void Dispose (bool disposing)
-		{
-		}
-		
-		Size IWidgetBackend.Size {
+
+        protected override void Dispose (bool disposing)
+        {
+            if (!disposed && disposing) {
+                foreach (var c in backendLookup.Values) {
+                    c.Backend.Dispose (disposing);
+                }
+                disposed = true;
+            }
+        }
+            
+        Size IWidgetBackend.Size {
 			get { return new Size (Widget.WidgetWidth (), Widget.WidgetHeight ()); }
 		}
-		
+
+#if false
 		public static NSView GetWidget (IWidgetBackend w)
 		{
 			return ((ViewBackend)w).Widget;
 		}
 
-#if false
         public static NSView GetWidget (Widget w)
         {
             return GetWidget ((IWidgetBackend)Toolkit.GetBackend (w));
@@ -508,11 +579,95 @@ namespace Xwt.Mac
 					Widget.SetFrameSize (new CGSize ((nfloat)s.Width, (nfloat)s.Height));
 			}
 		}
-		
-		public void SetSizeRequest (double width, double height)
-		{
-			// Nothing to do
-		}
+
+#if false
+        public void SetSizeRequest (double width, double height)
+        {
+            // Nothing to do
+        }
+#endif
+        public void SetBoundsRequest (Rectangle bounds)
+        {
+            requestBounds = bounds;
+        }
+        public Rectangle GetBoundsRequest()
+        {
+            return requestBounds;
+        }
+
+        /// <summary>
+        /// Reallangement this widget layout.
+        /// </summary>
+        /// <param name="bounds">Natural bounds.</param>
+        public void Reallocate (Rectangle bounds) 
+        {
+            this.Reallocate (new Origin (), bounds);
+        }
+
+        public void Reallocate (Origin o, Rectangle bounds)
+        {
+            // TODO: レイアウト制約で記述する
+
+            foreach (var v in this.GetChildViewObjects()) {
+                this.ReallocateInternal (v);
+            }
+        }
+
+        public virtual void ReallocateInternal (IViewObject targetView) {
+
+            /* マージン付きFit */
+#if false
+                this.View.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Leading, this.View, v.View, 50f));
+                this.View.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Top, this.View, v.View, 50f));
+
+                // サイズは、親とは取り立するため、nullを渡す必要がある
+                //this.View.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Width, null, v.View, 50));
+
+                this.View.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Trailing, v.View, this.View, 20f));
+
+                // Height制約がないため、親子関係を逆にしないと反映してくれない？
+                this.View.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Bottom, v.View, this.View, 20f));
+#endif
+
+            /* 下寄せ */
+#if false
+                this.View.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Leading, this.View, v.View, 20f));
+                this.View.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Trailing, v.View, this.View, 50f));
+
+                this.View.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Bottom, v.View, this.View, 20f));
+                // サイズは、親とは取り立するため、nullを渡す必要がある
+                this.View.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Height, null, v.View, 150));
+
+#endif
+
+            /* 右寄せ */
+#if false
+            this.View.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Top, this.View, targetView.View, 20f));
+            this.View.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Bottom, targetView.View, this.View, 50f));
+
+            this.View.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Trailing, targetView.View, this.View, 120f));
+            // サイズは、親とは取り立するため、nullを渡す必要がある
+            this.View.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Width, null, targetView.View, 75));
+
+#endif
+            var bounds = targetView.Backend.GetBoundsRequest ();
+
+            this.View.AddConstraint (EdgeConstraintFactory.Simple (NSLayoutAttribute.Left, this.View, targetView.View, bounds.Left));
+            this.View.AddConstraint (EdgeConstraintFactory.Simple (NSLayoutAttribute.Top, this.View, targetView.View, bounds.Top));
+
+            // サイズは、親とは取り立するため、nullを渡す必要がある
+            this.View.AddConstraint (EdgeConstraintFactory.Simple (NSLayoutAttribute.Height, null, targetView.View, bounds.Height));
+            this.View.AddConstraint (EdgeConstraintFactory.Simple (NSLayoutAttribute.Width, null, targetView.View, bounds.Width));
+        }
+
+        /// TODO: Delegate to Layout manager
+        private NSLayoutConstraint NewEdgeConstraint (NSLayoutAttribute attr, NSView superView, NSView subView, SizeConstraint size)
+        {
+            return NSLayoutConstraint.Create (
+                subView, attr, NSLayoutRelation.Equal,
+                superView, attr, 1.0f, new nfloat (size.AvailableSize)
+            );
+        }
 
         public virtual void UpdateLayout ()
         {
@@ -909,5 +1064,17 @@ namespace Xwt.Mac
 			base.SizeToFit ();
 		}
 	}
+
+    public static class EdgeConstraintFactory 
+    {
+        public static NSLayoutConstraint Simple(NSLayoutAttribute attr, NSView baseView, NSView targetView, SizeConstraint size)
+        {
+            return NSLayoutConstraint.Create (
+                targetView, attr, NSLayoutRelation.Equal,
+                baseView, attr, 1.0f, new nfloat(size.AvailableSize)
+            );
+
+        }
+    }
 }
 

@@ -30,6 +30,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Xwt.Backends;
+using Xwt.Drawing;
+
 #if false
 using System.Drawing;
 #endif
@@ -54,8 +56,8 @@ namespace Xwt.Mac
 	{
 		WindowBackendController controller;
 		IWindowFrameEventSink eventSink;
+        IViewObject realContainer;
 #if DEPLECATED
-        ViewBackend child;
         NSView childView;
 #endif
         bool sensitive = true;
@@ -66,31 +68,51 @@ namespace Xwt.Mac
 		{
 		}
 		
-		public WindowBackend ()
+		public WindowBackend (IViewObject container)
 		{
-			this.controller = new WindowBackendController ();
-			controller.Window = this;
+            Debug.Assert (container != null);
+
+            this.controller = new WindowBackendController ();
+			this.controller.Window = this;
+            this.controller.ContentViewController = container.Backend;
+
 			this.StyleMask |= NSWindowStyle.Resizable | NSWindowStyle.Closable | NSWindowStyle.Miniaturizable;
 			AutorecalculatesKeyViewLoop = true;
 
-			ContentView.AutoresizesSubviews = true;
+			//ContentView.AutoresizesSubviews = true;
 			ContentView.Hidden = true;
 
-			// TODO: do it only if mouse move events are enabled in a widget
-			AcceptsMouseMovedEvents = true;
+            this.realContainer = container;
+
+            //ContentView.AddSubview (this.realContainer.View);
+
+
+            //this.ContentView.AddConstraint(this.NewEdgeConstraint (NSLayoutAttribute.Width, this.ContentView, v.View, 50f));
+            //this.ContentView.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Top, this.ContentView, v.View, 10f));
+
+            //this.ContentView.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Leading, this.ContentView, v.View, 20f));
+            //this.ContentView.AddConstraint(this.NewEdgeConstraint (NSLayoutAttribute.Top, this.ContentView, v.View, 0f));
+            //this.ContentView.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Trailing, this.ContentView, v.View, -20f));
+            //this.ContentView.AddConstraint(this.NewEdgeConstraint (NSLayoutAttribute.Bottom, this.ContentView, v.View, 0f));
+
+            // TODO: do it only if mouse move events are enabled in a widget
+            AcceptsMouseMovedEvents = true;
 
 			this.Center ();
 		}
 
-		object IWindowFrameBackend.Window {
+		object IWindowFrameBackend.Window 
+        {
 			get { return this; }
 		}
 
-		public IntPtr NativeHandle {
+		public IntPtr NativeHandle 
+        {
 			get { return Handle; }
 		}
 
-		public IWindowFrameEventSink EventSink { 
+		public IWindowFrameEventSink EventSink 
+        { 
 			get { return eventSink; }
 		}
 
@@ -100,7 +122,8 @@ namespace Xwt.Mac
             this.app = ((MacEngine)context.Engine).App;
 		}
 
-        private void RegisterWillClose(EventHandler handler) {
+        private void RegisterWillClose(EventHandler handler) 
+        {
             this.eventSink.OnClosed.Enabled = () => {
                 this.WillClose += handler;
             };
@@ -212,6 +235,15 @@ namespace Xwt.Mac
 			}
 		}
 		
+        Color IWindowFrameBackend.BackgroundColor { 
+            get {
+                return this.BackgroundColor.ToXwtColor ();
+            } 
+            set {
+                this.BackgroundColor = value.ToNSColor ();
+            }
+        }
+
 		public virtual bool CanGetFocus {
 			get { return true; }
 		}
@@ -420,19 +452,19 @@ namespace Xwt.Mac
 
 		void IWindowBackend.SetChild (IWidgetBackend child)
 		{
-            NSView subView;
-            if (this.TryGetChiledView(out subView)) {
-                subView.RemoveFromSuperview();
-            }
+            var v = child as IViewObject;
+            Debug.Assert (child != null);
+            this.realContainer= v;
 
-            if (child != null) {
-                var obj = child as IViewObject;
-                Debug.Assert (obj != null);
+            this.LayoutWindow ();
+            //if (child != null) {
+            //    var obj = child as IViewObject;
+            //    Debug.Assert (obj != null);
 
-                this.ContentView.AddSubview (obj.View);
-                this.LayoutWindow ();
-                obj.View.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
-            }
+            //    this.ContentView.AddSubview (obj.View);
+            //    this.LayoutWindow ();
+            //    obj.View.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
+            //}
 
 
 #if DEPLECATED
@@ -519,8 +551,12 @@ namespace Xwt.Mac
 			if (height == -1)
 				height = cr.Height;
 			var r = FrameRectFor (new CGRect ((nfloat)cr.X, (nfloat)cr.Y, (nfloat)width, (nfloat)height));
-			SetFrame (r, true);
-			LayoutWindow ();
+			this.SetFrame (r, true);
+
+            var v = ((IViewObject)realContainer);
+            //v.View.SetFrameSize (r.Size);
+         
+            LayoutWindow ();
 		}
 		
 		Rectangle IWindowFrameBackend.Bounds {
@@ -609,13 +645,16 @@ namespace Xwt.Mac
 		
         public void LayoutContent (CGRect frame, WidgetSpacing padding)
 		{
+
             NSView subView;
-            if (this.TryGetChiledView(out subView)) {
+            //if (this.TryGetChiledView(out subView)) 
+            {
                 frame.X += (nfloat)padding.Left;
                 frame.Width -= (nfloat)(padding.HorizontalSpacing);
                 frame.Y += (nfloat)padding.Top;
                 frame.Height -= (nfloat)(padding.VerticalSpacing);
-                subView.Frame = frame;
+
+                //(subView as IWidgetBackend)?.Reallocate (frame.ToXwtRect());
 #if DEPLECATED
                 childView.Frame = frame;
 #endif

@@ -24,9 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-#if false
 using Xwt.Drawing;
-#endif
 
 namespace Xwt.Backends
 {
@@ -67,6 +65,7 @@ namespace Xwt.Backends
         void SetTransientFor (IWindowFrameBackend window);
         bool Resizable { get; set; }
         double Opacity { get; set; }
+        Color BackgroundColor { get; set; }
 
 #if false
         void SetIcon (ImageDescription image);

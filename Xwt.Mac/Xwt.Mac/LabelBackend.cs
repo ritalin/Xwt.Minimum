@@ -52,14 +52,16 @@ namespace Xwt.Mac
 
 		protected LabelBackend (IViewObject view)
 		{
-			View = view;
+			viewObject = view;
 		}
 
-		IViewObject View;
+		IViewObject viewObject;
+        CustomAlignedContainer textContainer;
 
 		public override void Initialize ()
 		{
-            this.InitializeViewObject (new CustomAlignedContainer (this.EventSink, this.ApplicationContext, this.View.View));
+            textContainer = new CustomAlignedContainer (this.EventSink, this.ApplicationContext, this.viewObject.View);
+            this.InitializeViewObject (textContainer);
 
             this.Widget.StringValue = string.Empty;
 			this.Widget.Editable = false;
@@ -73,7 +75,12 @@ namespace Xwt.Mac
             this.Widget.Cell.Scrollable = false;
 		}
 
-		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
+        public override void LoadView ()
+        {
+            this.View = textContainer.View;
+        }
+
+        public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			var r = new CGRect (0, 0, widthConstraint.IsConstrained ? (float)widthConstraint.AvailableSize : float.MaxValue, heightConstraint.IsConstrained ? (float)heightConstraint.AvailableSize : float.MaxValue);
 			var s = Widget.Cell.CellSizeForBounds (r);
@@ -81,7 +88,7 @@ namespace Xwt.Mac
 		}
 
         CustomAlignedContainer Container {
-            get { return (CustomAlignedContainer)base.Widget; }
+            get { return textContainer; }
         }
 
 		public new NSTextField Widget {

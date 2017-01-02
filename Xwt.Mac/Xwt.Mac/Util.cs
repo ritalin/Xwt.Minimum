@@ -148,7 +148,7 @@ namespace Xwt.Mac
 			col = col.UsingColorSpace (DeviceRGBString);
 			return new Color (col.RedComponent, col.GreenComponent, col.BlueComponent, col.AlphaComponent);
 		}
-#if false		
+#if false
 		public static Color ToXwtColor (this CGColor col)
 		{
 			var cs = col.Components;
@@ -159,12 +159,18 @@ namespace Xwt.Mac
 		{
 			return new Size (s.Width, s.Height);
 		}
+#endif
 
-		public static CGRect ToCGRect (this Rectangle r)
+        public static CGRect ToCGRect (this Rectangle r)
 		{
 			return new CGRect ((nfloat)r.X, (nfloat)r.Y, (nfloat)r.Width, (nfloat)r.Height);
 		}
 
+        public static Rectangle ToXwtRect(this CGRect r) {
+            return new Rectangle (r.X, r.Y, r.Width, r.Height);
+        }
+
+#if false
 		// /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Headers/IconsCore.h
 		public static int ToIconType (string id)
 		{

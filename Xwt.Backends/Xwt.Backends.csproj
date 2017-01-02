@@ -61,6 +61,11 @@
     <Compile Include="Xwt.Drawing\HslColor.cs" />
     <Compile Include="Xwt\CursorType.cs" />
     <Compile Include="Xwt.Drawing\Colors.cs" />
+    <Compile Include="Xwt.Backends\ICanvasBackend.cs" />
+    <Compile Include="Xwt.Backends\ContextBackendHandler.cs" />
+    <Compile Include="Xwt.Backends\DrawingPathBackendHandler.cs" />
+    <Compile Include="Xwt.Backends\DisposableResourceBackendHandler.cs" />
+    <Compile Include="Xwt.Drawing\StyleSet.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
