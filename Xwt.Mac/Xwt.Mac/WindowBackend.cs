@@ -552,9 +552,6 @@ namespace Xwt.Mac
 				height = cr.Height;
 			var r = FrameRectFor (new CGRect ((nfloat)cr.X, (nfloat)cr.Y, (nfloat)width, (nfloat)height));
 			this.SetFrame (r, true);
-
-            var v = ((IViewObject)realContainer);
-            //v.View.SetFrameSize (r.Size);
          
             LayoutWindow ();
 		}
@@ -646,6 +643,7 @@ namespace Xwt.Mac
         public void LayoutContent (CGRect frame, WidgetSpacing padding)
 		{
 
+#if DEPLECATED
             NSView subView;
             //if (this.TryGetChiledView(out subView)) 
             {
@@ -655,11 +653,10 @@ namespace Xwt.Mac
                 frame.Height -= (nfloat)(padding.VerticalSpacing);
 
                 //(subView as IWidgetBackend)?.Reallocate (frame.ToXwtRect());
-#if DEPLECATED
                 childView.Frame = frame;
+        }
 #endif
-            }
-		}
+        }
 	}
 	
 	public partial class WindowBackendController : NSWindowController

@@ -59,7 +59,9 @@ namespace Xwt.Mac
 	public abstract class ViewBackend<T,S>: ViewBackend where T:NSView where S:IWidgetEventSink
 	{
 		public new S EventSink {
-			get { return (S) base.EventSink; }
+			get { 
+                return (S) base.EventSink; 
+            }
 		}
 		
 		public new T Widget {
@@ -101,11 +103,19 @@ namespace Xwt.Mac
 #endif
         }
 
-        void IWidgetBackend.Initialize (IWidgetEventSink sink)
+        public void Initialize (IWidgetEventSink sink)
         {
+            Debug.Assert (sink != null);
+
             eventSink = sink;
             Initialize ();
             ResetFittingSize ();
+
+            this.InitializeEventInternal ();
+        }
+
+        protected virtual void InitializeEventInternal() {
+            
         }
 
         protected void InitializeViewObject (IViewObject view)

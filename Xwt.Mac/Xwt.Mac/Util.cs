@@ -56,9 +56,13 @@ namespace Xwt.Mac
 	public static class Util
 	{
 		public static readonly string DeviceRGBString = NSColorSpace.DeviceRGB.ToString ();
-		static CGColorSpace deviceRGB, pattern;
 
-		public static CGColorSpace DeviceRGBColorSpace {
+        static CGColorSpace deviceRGB;
+        #if false
+        static CGColorSpace pattern;
+#endif
+
+        public static CGColorSpace DeviceRGBColorSpace {
 			get {
 				if (deviceRGB == null)
 					deviceRGB = CGColorSpace.CreateDeviceRGB ();
@@ -501,7 +505,8 @@ namespace Xwt.Mac
 			}
 		}
 
-		public static void DrawWithColorTransform (this NSView view, Color? color, Action drawDelegate)
+#endif
+        public static void DrawWithColorTransform (this NSView view, Color? color, Action drawDelegate)
 		{
 			if (color.HasValue) {
 				if (view.Frame.Size.Width <= 0 || view.Frame.Size.Height <= 0)
@@ -531,7 +536,6 @@ namespace Xwt.Mac
 			} else
 				drawDelegate();
 		}
-#endif
 	}
 
 	public interface ICopiableObject

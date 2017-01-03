@@ -66,6 +66,9 @@
     <Compile Include="Xwt.Backends\DrawingPathBackendHandler.cs" />
     <Compile Include="Xwt.Backends\DisposableResourceBackendHandler.cs" />
     <Compile Include="Xwt.Drawing\StyleSet.cs" />
+    <Compile Include="Xwt.Backends\IButtonBackend.cs" />
+    <Compile Include="Xwt\ButtonStyle.cs" />
+    <Compile Include="Xwt.Backends\IRadioButtonBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
