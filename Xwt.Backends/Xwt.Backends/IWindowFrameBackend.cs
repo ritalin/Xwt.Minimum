@@ -28,10 +28,9 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-    public interface IWindowFrameBackend : IBackend
+    public interface IWindowFrameBackend : IBackend, IDisposable
     {
         void Initialize (IWindowFrameEventSink eventSink);
-        void Dispose ();
 
         /// <summary>
         /// Gets or sets the name of the window.
@@ -65,7 +64,6 @@ namespace Xwt.Backends
         void SetTransientFor (IWindowFrameBackend window);
         bool Resizable { get; set; }
         double Opacity { get; set; }
-        Color BackgroundColor { get; set; }
 
 #if false
         void SetIcon (ImageDescription image);

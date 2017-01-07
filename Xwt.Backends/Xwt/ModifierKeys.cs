@@ -1,5 +1,5 @@
 // 
-// IWindowBackend.cs
+// ModifierKeys.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,39 +23,18 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt;
-using Xwt.Drawing;
 
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface IWindowBackend: IWindowFrameBackend, IChildPlacementHandler
+	[Flags]
+	public enum ModifierKeys
 	{
-		void SetChild (IWidgetBackend child, bool needAlignment);
-        void SetMainMenu (IMenuBackend menu);
-        void SetPadding (double left, double top, double right, double bottom);
-
-		/// <summary>
-		/// Get size information about the window
-		/// </summary>
-		/// <param name="minSize">The minimum size that the content area can have.
-		/// For example, in a dialog the content are must be at least as wide as the width
-		/// of the button bar</param>
-		/// <param name="decorationSize">the size of the decorations around
-		/// the content widget. It should include for example the size required
-		/// by the menu bar, dialog button bar, etc.</param>
-		void GetMetrics (out Size minSize, out Size decorationSize);
-
-		/// <summary>
-		/// Sets the minimum size of the window
-		/// </summary>
-		void SetMinSize (Size size);
-        Color BackgroundColor { get; set; }
-    }
-	
-	public interface IWindowEventSink: IWindowFrameEventSink
-	{
+		None = 0,
+		Alt = 0x1 << 0,
+		Control = 0x1 << 1,
+		Shift = 0x1 << 2,
+		Command = 0x1 << 3
 	}
 }
 

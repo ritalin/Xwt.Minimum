@@ -235,7 +235,7 @@ namespace Xwt.Mac
 			}
 		}
 		
-        Color IWindowFrameBackend.BackgroundColor { 
+        Color IWindowBackend.BackgroundColor { 
             get {
                 return this.BackgroundColor.ToXwtColor ();
             } 

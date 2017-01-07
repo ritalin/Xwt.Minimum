@@ -1,5 +1,5 @@
 //
-// IChildPlacementHandler.cs
+// ColorTextAttribute.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -26,12 +26,26 @@
 
 using System;
 
-namespace Xwt.Backends
-{
+using Xwt.Backends;
+using System.Collections.Generic;
 
-	public interface IChildPlacementHandler
+namespace Xwt.Drawing
+{
+	
+	public sealed class ColorTextAttribute: TextAttribute
 	{
-		void UpdateChildPlacement (IWidgetBackend childBackend, bool needAlihnment);
+		public Color Color { get; set; }
+
+		public override bool Equals (object t)
+		{
+			var ot = t as ColorTextAttribute;
+			return ot != null && Color == ot.Color && base.Equals (t);
+		}
+
+		public override int GetHashCode ()
+		{
+			return base.GetHashCode () ^ Color.GetHashCode ();
+		}
 	}
 	
 }

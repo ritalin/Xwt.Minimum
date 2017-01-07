@@ -1,5 +1,5 @@
 //
-// IChildPlacementHandler.cs
+// BackgroundTextAttribute.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -26,12 +26,26 @@
 
 using System;
 
-namespace Xwt.Backends
+using Xwt.Backends;
+using System.Collections.Generic;
+
+namespace Xwt.Drawing
 {
 
-	public interface IChildPlacementHandler
+	public sealed class BackgroundTextAttribute: TextAttribute
 	{
-		void UpdateChildPlacement (IWidgetBackend childBackend, bool needAlihnment);
+		public Color Color { get; set; }
+		
+		public override bool Equals (object t)
+		{
+			var ot = t as BackgroundTextAttribute;
+			return ot != null && Color.Equals (ot.Color) && base.Equals (t);
+		}
+
+		public override int GetHashCode ()
+		{
+			return base.GetHashCode () ^ Color.GetHashCode ();
+		}
 	}
 	
 }

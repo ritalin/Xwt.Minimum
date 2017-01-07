@@ -375,7 +375,7 @@ namespace Xwt.Backends
 			InvokeAsync (action);
 		}
 
-        #if false
+#if false
         /// <summary>
         /// Determines whether a widget has a native parent widget
         /// </summary>
@@ -405,6 +405,7 @@ namespace Xwt.Backends
         public virtual void RenderImage (object nativeWidget, object nativeContext, ImageDescription img, double x, double y)
         {
         }
+#endif
 
         /// <summary>
         /// Gets the information about Xwt features supported by the toolkit.
@@ -413,7 +414,6 @@ namespace Xwt.Backends
         public virtual ToolkitFeatures SupportedFeatures {
             get { return ToolkitFeatures.All; }
         }
-		#endif
 	}
 }
 

@@ -1,5 +1,5 @@
 //
-// IChildPlacementHandler.cs
+// TextAttribute.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -26,12 +26,35 @@
 
 using System;
 
-namespace Xwt.Backends
-{
+using Xwt.Backends;
+using System.Collections.Generic;
 
-	public interface IChildPlacementHandler
+namespace Xwt.Drawing
+{
+	public abstract class TextAttribute
 	{
-		void UpdateChildPlacement (IWidgetBackend childBackend, bool needAlihnment);
+		public int StartIndex { get; set; }
+		public int Count { get; set; }
+
+		internal TextAttribute ()
+		{
+		}
+
+		public TextAttribute Clone ()
+		{
+			return (TextAttribute)MemberwiseClone ();
+		}
+
+		public override bool Equals (object ob)
+		{
+			var t = ob as TextAttribute;
+			return t != null && t.GetType () == GetType () && t.StartIndex == StartIndex && t.Count == Count;
+		}
+
+		public override int GetHashCode ()
+		{
+			return GetType().GetHashCode () ^ StartIndex ^ Count;
+		}
 	}
 	
 }

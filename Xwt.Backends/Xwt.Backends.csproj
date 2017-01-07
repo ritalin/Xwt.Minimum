@@ -69,6 +69,13 @@
     <Compile Include="Xwt.Backends\IButtonBackend.cs" />
     <Compile Include="Xwt\ButtonStyle.cs" />
     <Compile Include="Xwt.Backends\IRadioButtonBackend.cs" />
+    <Compile Include="Xwt\Toolkit.cs" />
+    <Compile Include="Xwt.Drawing\BackgroundTextAttribute.cs" />
+    <Compile Include="Xwt.Drawing\ColorTextAttribute.cs" />
+    <Compile Include="Xwt.Drawing\TextAttribute.cs" />
+    <Compile Include="Xwt\IconSize.cs" />
+    <Compile Include="Xwt\ModifierKeys.cs" />
+    <Compile Include="Xwt.Backends\TextLayoutBackendHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

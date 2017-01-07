@@ -1,8 +1,9 @@
 // 
-// IWindowBackend.cs
+// ITextLayoutBackendHandler.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Lytico (http://limada.sourceforge.net)
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -25,37 +26,30 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt;
 using Xwt.Drawing;
+using System.Collections.Generic;
 
 namespace Xwt.Backends
 {
-	public interface IWindowBackend: IWindowFrameBackend, IChildPlacementHandler
+	public abstract class TextLayoutBackendHandler: DisposableResourceBackendHandler
 	{
-		void SetChild (IWidgetBackend child, bool needAlignment);
-        void SetMainMenu (IMenuBackend menu);
-        void SetPadding (double left, double top, double right, double bottom);
+#if false
+        public abstract object Create ();
 
-		/// <summary>
-		/// Get size information about the window
-		/// </summary>
-		/// <param name="minSize">The minimum size that the content area can have.
-		/// For example, in a dialog the content are must be at least as wide as the width
-		/// of the button bar</param>
-		/// <param name="decorationSize">the size of the decorations around
-		/// the content widget. It should include for example the size required
-		/// by the menu bar, dialog button bar, etc.</param>
-		void GetMetrics (out Size minSize, out Size decorationSize);
+        public abstract void SetWidth (object backend, double value);
+        public abstract void SetHeight (object backend, double value);
+        public abstract void SetText (object backend, string text);
+        public abstract void SetFont (object backend, Font font);
+        public abstract void SetTrimming (object backend, TextTrimming textTrimming);
+        public abstract Size GetSize (object backend);
+        public abstract int GetIndexFromCoordinates (object backend, double x, double y);
+        public abstract Point GetCoordinateFromIndex (object backend, int index);
+        public abstract double GetBaseline (object backend);
+        public abstract double GetMeanline (object backend);
 
-		/// <summary>
-		/// Sets the minimum size of the window
-		/// </summary>
-		void SetMinSize (Size size);
-        Color BackgroundColor { get; set; }
-    }
-	
-	public interface IWindowEventSink: IWindowFrameEventSink
-	{
+        public abstract void AddAttribute (object backend, TextAttribute attribute);
+        public abstract void ClearAttributes (object backend);
+		#endif
 	}
 }
 

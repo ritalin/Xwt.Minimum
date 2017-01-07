@@ -46,7 +46,7 @@ using CoreGraphics;
 
 namespace Xwt.Mac
 {
-	public class MacEngine: ToolkitEngineBackend
+	public class MacEngine: ToolkitEngineBackend, IDisposable
 	{
 		AppDelegate appDelegate;
 		static NSAutoreleasePool pool;
