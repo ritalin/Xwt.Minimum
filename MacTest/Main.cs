@@ -15,14 +15,8 @@ namespace Project1
             engine.Initialize (false);
 
             ApplicationContext ctx = new ApplicationContext (engine, Thread.CurrentThread);
-
-            ICanvasBackend container = new CanvasBackend ();
-            container.InitializeBackend (null, ctx);
-            container.Initialize (null);
-            container.BackgroundColor = Colors.Blue;
-            container.SetBoundsRequest (new Rectangle (0, 0, 600, 400));
                      
-            IWindowBackend wb = new WindowBackend (container as IViewObject);
+            IWindowBackend wb = new WindowBackend ();
             wb.InitializeBackend (null, ctx);
 
             // Connecting to event sink
@@ -32,11 +26,19 @@ namespace Project1
             // ウインドウサイズだけは制約ではなく直接指定する必要がある
             wb.SetSize (600, 400);
 
+            ICanvasBackend container = new CanvasBackend ();
+            container.InitializeBackend (null, ctx);
+            container.Initialize (new Xwt.Backends.CanvasEventSink.Default ());
+            container.BackgroundColor = Colors.Blue;
+            container.SetBoundsRequest (new Rectangle (0, 0, 600, 400)); // ContentViewの制約は有効にならない
+
+            wb.SetChild (container, false);
+
             // TODO: 親の原点と子の矩型領域から、レイアウト制約を決定する
 
             ICanvasBackend canvas = new CanvasBackend ();
             canvas.InitializeBackend (null, ctx);
-            canvas.Initialize (null);
+            canvas.Initialize (new Xwt.Backends.CanvasEventSink.Default());
             canvas.BackgroundColor = Colors.Lime;
             canvas.SetBoundsRequest (new Rectangle (16, 16, 568, 368));
             container.AddChild (canvas);
@@ -70,6 +72,7 @@ namespace Project1
         private static void ComposeItems(ApplicationContext ctx, IWidgetBackend contaner) {
             ILabelBackend label = new LabelBackend ();
             label.InitializeBackend (null, ctx);
+            label.Initialize (null);
             label.Initialize (new Xwt.Backends.WidgetEventSink.Default());
 
             label.Text = "Hello minimum xwt";

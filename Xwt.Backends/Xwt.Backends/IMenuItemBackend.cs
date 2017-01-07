@@ -89,9 +89,11 @@ namespace Xwt.Backends
         }
     }
 
+#if false
     public enum MenuItemEvent
-	{
-		Clicked = 1
-	}
+    {
+        Clicked = 1
+    }
+#endif
 }
 

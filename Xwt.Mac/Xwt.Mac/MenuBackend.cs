@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Diagnostics;
 using Xwt.Backends;
 
 #if MONOMAC
@@ -71,7 +72,6 @@ namespace Xwt.Mac
 		{
 		}
 
-#if false
         public void Popup ()
         {
             var evt = NSApplication.SharedApplication.CurrentEvent;
@@ -80,9 +80,13 @@ namespace Xwt.Mac
 
         public void Popup (IWidgetBackend widget, double x, double y)
         {
-            NSMenu.PopUpContextMenu (this, NSApplication.SharedApplication.CurrentEvent, ((ViewBackend)widget).Widget);
+            var v = widget as IViewObject;
+            Debug.Assert (v != null);
+
+            NSMenu.PopUpContextMenu (this, NSApplication.SharedApplication.CurrentEvent, (v.View));
         }
 
+#if false
 		object IMenuBackend.Font {
 			get {
 				return FontData.FromFont (Font);

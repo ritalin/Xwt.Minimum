@@ -61,6 +61,7 @@ namespace Xwt.Mac
         NSView childView;
 #endif
         bool sensitive = true;
+        Rectangle requestBounds = new Rectangle (0, 0, -1, -1);
 
         AppDelegate app;
 
@@ -68,37 +69,18 @@ namespace Xwt.Mac
 		{
 		}
 		
-		public WindowBackend (IViewObject container)
+		public WindowBackend ()
 		{
-            Debug.Assert (container != null);
-
             this.controller = new WindowBackendController ();
 			this.controller.Window = this;
-            this.controller.ContentViewController = container.Backend;
 
 			this.StyleMask |= NSWindowStyle.Resizable | NSWindowStyle.Closable | NSWindowStyle.Miniaturizable;
-			AutorecalculatesKeyViewLoop = true;
-
-			//ContentView.AutoresizesSubviews = true;
-			ContentView.Hidden = true;
-
-            this.realContainer = container;
-
-            //ContentView.AddSubview (this.realContainer.View);
-
-
-            //this.ContentView.AddConstraint(this.NewEdgeConstraint (NSLayoutAttribute.Width, this.ContentView, v.View, 50f));
-            //this.ContentView.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Top, this.ContentView, v.View, 10f));
-
-            //this.ContentView.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Leading, this.ContentView, v.View, 20f));
-            //this.ContentView.AddConstraint(this.NewEdgeConstraint (NSLayoutAttribute.Top, this.ContentView, v.View, 0f));
-            //this.ContentView.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Trailing, this.ContentView, v.View, -20f));
-            //this.ContentView.AddConstraint(this.NewEdgeConstraint (NSLayoutAttribute.Bottom, this.ContentView, v.View, 0f));
 
             // TODO: do it only if mouse move events are enabled in a widget
             AcceptsMouseMovedEvents = true;
+            AutorecalculatesKeyViewLoop = true;
 
-			this.Center ();
+            this.Center ();
 		}
 
 		object IWindowFrameBackend.Window 
@@ -244,7 +226,9 @@ namespace Xwt.Mac
             }
         }
 
-		public virtual bool CanGetFocus {
+        IWidgetBackend IWindowBackend.Child { get { return realContainer.Backend; } }
+
+        public virtual bool CanGetFocus {
 			get { return true; }
 		}
 		
@@ -279,8 +263,8 @@ namespace Xwt.Mac
 			}
 		}
 
-		#region IWindowBackend implementation
-		void IBackend.EnableEvent (object eventId)
+        #region IWindowBackend implementation
+        void IBackend.EnableEvent (object eventId)
 		{
 #if DEPLECATED
 			if (eventId is WindowFrameEvent) {
@@ -449,14 +433,28 @@ namespace Xwt.Mac
                 return true;
             }
         }
+        
+        void SetChildInternal(IViewObject child, bool needAlignment)
+        {
+            child.Backend.View.Hidden = this.ContentView.Hidden;
 
-		void IWindowBackend.SetChild (IWidgetBackend child)
+            this.realContainer = child;
+            this.controller.ContentViewController = child.Backend;
+
+            this.SetSize (requestBounds.Width, requestBounds.Height);
+
+            if (needAlignment) {
+                this.LayoutWindow ();
+            }
+        }
+
+		void IWindowBackend.SetChild (IWidgetBackend child, bool needAlignment)
 		{
             var v = child as IViewObject;
             Debug.Assert (child != null);
-            this.realContainer= v;
 
-            this.LayoutWindow ();
+            this.SetChildInternal (v, needAlignment);
+
             //if (child != null) {
             //    var obj = child as IViewObject;
             //    Debug.Assert (obj != null);
@@ -485,14 +483,16 @@ namespace Xwt.Mac
 
         }
 		
-		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
+		public virtual void UpdateChildPlacement (IWidgetBackend child, bool needAlignment)
 		{
-            #if false
-            var w = ViewBackend.SetChildPlacement (childBackend);
-            LayoutWindow ();
+            var v = child as IViewObject;
+            Debug.Assert (child != null);
+
+            this.SetChildInternal (v, needAlignment);
+#if false
             w.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
-			#endif
-		}
+#endif
+        }
 
 		bool IWindowFrameBackend.Decorated {
 			get {
@@ -543,7 +543,7 @@ namespace Xwt.Mac
 			SetFrame (r, true);
 		}
 		
-		void IWindowFrameBackend.SetSize (double width, double height)
+		public void SetSize (double width, double height)
 		{
 			var cr = ContentRectFor (Frame);
 			if (width == -1)
@@ -552,7 +552,8 @@ namespace Xwt.Mac
 				height = cr.Height;
 			var r = FrameRectFor (new CGRect ((nfloat)cr.X, (nfloat)cr.Y, (nfloat)width, (nfloat)height));
 			this.SetFrame (r, true);
-         
+    requestBounds = new Rectangle(0, 0, width, height);
+
             LayoutWindow ();
 		}
 		
@@ -584,7 +585,7 @@ namespace Xwt.Mac
 
 		bool disposing;
 
-		void IWindowFrameBackend.Dispose ()
+		void IDisposable.Dispose ()
 		{
 			disposing = true;
 			try {

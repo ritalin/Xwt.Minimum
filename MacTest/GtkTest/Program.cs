@@ -24,20 +24,68 @@ namespace GtkTest
                     wb.Initialize (new Xwt.Backends.WindowFrameEventSink.Default ());
 
                     wb.BackgroundColor = Colors.Red;
-                    // ウインドウサイズだけは制約ではなく直接指定する必要がある
+
                     wb.SetSize (600, 400);
+
+                    PopulateMenu (ctx, wb);
+
+                    wb.EventSink.OnShown.Register (e => {
+                        // As Visible property is true, fired.
+                        return;
+                    });
+                    wb.EventSink.OnHidden.Register (e => {
+                        // As Visible property is true, fired.
+                        return;
+                    });
+                    wb.EventSink.OnCloseRequested.Register (e => {
+                        // As Visible property is true, fired.
+                        return;
+                    });
+                    wb.EventSink.OnClosed.Register (e => {
+                        // As Visible property is true, fired.
+                        return;
+                    });
+                    wb.EventSink.OnBoundsChanged.Register (e => {
+                        return;
+                    });
 
                     wb.Visible = true;
 
                     SynchronizationContext.SetSynchronizationContext (new XwtSynchronizationContext (ctx));
 
                     engine.RunApplication ();
-
-                    //MainWindow win = new MainWindow ();
-                    //win.Show ();
-                    //Application.Run ();
                 }
             }
+        }
+
+        private static void PopulateMenu (ApplicationContext ctx, IWindowBackend wb)
+        {
+            var mainMenu = new MenuBackend ();
+            mainMenu.InitializeBackend (null, ctx);
+
+            var fileMenu = new MenuItemBackend ();
+            fileMenu.InitializeBackend (null, ctx);
+            {
+                fileMenu.Label = "File";
+                {
+                    var m = new MenuBackend ();
+                    m.InitializeBackend (null, ctx);
+                    fileMenu.SetSubmenu (m);
+                    {
+                        var mi = new MenuItemBackend ();
+                        mi.InitializeBackend (null, ctx);
+                        mi.Initialize (new Xwt.Backends.MenuItemEventSink.Default ());
+                        mi.Label = "Close";
+                        m.InsertItem (0, mi);
+                        mi.EventSink.OnClicked.Register (delegate {
+                            ctx.Engine.ExitApplication ();
+                        });
+                    }
+                }
+            }
+            mainMenu.InsertItem (0, fileMenu);
+
+            wb.SetMainMenu (mainMenu);
         }
     }
 }

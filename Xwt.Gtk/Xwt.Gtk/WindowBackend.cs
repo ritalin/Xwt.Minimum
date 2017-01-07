@@ -39,8 +39,9 @@ namespace Xwt.GtkBackend
 		
 		public override void Initialize ()
 		{
-			Window = new Gtk.Window ("");
-			Window.Add (CreateMainLayout ());
+            Window = new Gtk.Window ("");
+            Window.Add (CreateMainLayout ());
+            Window.Realize ();
 		}
 		
 		protected virtual Gtk.Widget CreateMainLayout ()
@@ -89,7 +90,6 @@ namespace Xwt.GtkBackend
 
 		public void SetMainMenu (IMenuBackend menu)
 		{
-#if false
             if (mainMenu != null)
                 mainBox.Remove (mainMenu);
 
@@ -100,7 +100,6 @@ namespace Xwt.GtkBackend
                 ((Gtk.Box.BoxChild)mainBox [mainMenu]).Position = 0;
             } else
                 mainMenu = null;
-			#endif
 		}
 
 		public void SetPadding (double left, double top, double right, double bottom)
@@ -131,10 +130,16 @@ namespace Xwt.GtkBackend
 
         Color IWindowBackend.BackgroundColor {
             get {
-                return alignment.Style.Background(Gtk.StateType.Normal).ToXwtValue();
+                return Window.Style.Background (Gtk.StateType.Normal).ToXwtValue ();
             }
             set {
-                alignment.ModifyBg (Gtk.StateType.Normal, value.ToGtkValue ());
+                this.Window.ModifyBg (Gtk.StateType.Normal, value.ToGtkValue ());
+            }
+        }
+
+        IWidgetBackend IWindowBackend.Child {
+            get {
+                return null;
             }
         }
 	}

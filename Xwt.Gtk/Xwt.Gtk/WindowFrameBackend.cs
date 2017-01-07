@@ -114,10 +114,49 @@ namespace Xwt.GtkBackend
 					args.Requisition = new Gtk.Requisition () { Width = w, Height = h };
 				}
 			};
-			#endif
-		}
-		
-		public virtual void Initialize ()
+#endif
+            this.EventSink.OnShown.Enabled = () => {
+                this.Window.Shown += HandleShown;
+            };
+            this.EventSink.OnShown.Disabled = () => {
+                this.Window.Shown -= HandleShown;
+            };
+            this.EventSink.OnHidden.Enabled = () => {
+                this.Window.Hidden += HandleHidden;
+            };
+            this.EventSink.OnHidden.Disabled = () => {
+                this.Window.Hidden -= HandleHidden;
+            };
+            this.EventSink.OnCloseRequested.Enabled = () => {
+                this.Window.DeleteEvent += HandleCloseRequested;
+            };
+            this.EventSink.OnCloseRequested.Disabled = () => {
+                this.Window.DeleteEvent -= HandleCloseRequested;
+            };
+            this.EventSink.OnClosed.Enabled = () => {
+            };
+            this.EventSink.OnClosed.Disabled = () => {
+            };
+            this.EventSink.OnBoundsChanged.Enabled = () => {
+                this.Window.AddEvents ((int)Gdk.EventMask.StructureMask);
+                this.Window.ConfigureEvent += HandleConfigureEvent; 
+            };
+            this.EventSink.OnBoundsChanged.Disabled = () => {
+                this.Window.ConfigureEvent -= HandleConfigureEvent;
+            };
+        }
+
+        public virtual void EnableEvent (object ev)
+        {
+
+        }
+
+        public virtual void DisableEvent (object ev)
+        {
+
+        }
+
+        public virtual void Initialize ()
 		{
 		}
 		
@@ -282,38 +321,6 @@ namespace Xwt.GtkBackend
         }
 		#endif
 		#endregion
-
-		public virtual void EnableEvent (object ev)
-		{
-			if (ev is WindowFrameEvent) {
-				switch ((WindowFrameEvent)ev) {
-				case WindowFrameEvent.BoundsChanged:
-					Window.AddEvents ((int)Gdk.EventMask.StructureMask);
-					Window.ConfigureEvent += HandleConfigureEvent; break;
-				case WindowFrameEvent.Closed:
-				case WindowFrameEvent.CloseRequested:
-					Window.DeleteEvent += HandleCloseRequested; break;
-				case WindowFrameEvent.Shown:
-					Window.Shown += HandleShown; break;
-				case WindowFrameEvent.Hidden:
-					Window.Hidden += HandleHidden; break;
-				}
-			}
-		}
-
-		public virtual void DisableEvent (object ev)
-		{
-			if (ev is WindowFrameEvent) {
-				switch ((WindowFrameEvent)ev) {
-				case WindowFrameEvent.BoundsChanged:
-					Window.ConfigureEvent -= HandleConfigureEvent; break;
-				case WindowFrameEvent.Shown:
-					Window.Shown -= HandleShown; break;
-				case WindowFrameEvent.Hidden:
-					Window.Hidden -= HandleHidden; break;
-				}
-			}
-		}
 		
 		void HandleHidden (object sender, EventArgs e)
 		{

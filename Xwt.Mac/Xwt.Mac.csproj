@@ -77,6 +77,7 @@
     <Compile Include="Xwt.Mac\CanvasBackend.cs" />
     <Compile Include="Xwt.Mac\ContextBackendHandler.cs" />
     <Compile Include="Xwt.Mac\ButtonBackend.cs" />
+    <Compile Include="Xwt.Mac\childView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Xwt.Backends\Xwt.Backends.csproj">

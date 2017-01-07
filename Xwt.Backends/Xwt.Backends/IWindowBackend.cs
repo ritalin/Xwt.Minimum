@@ -52,6 +52,7 @@ namespace Xwt.Backends
 		/// </summary>
 		void SetMinSize (Size size);
         Color BackgroundColor { get; set; }
+        IWidgetBackend Child { get; }
     }
 	
 	public interface IWindowEventSink: IWindowFrameEventSink

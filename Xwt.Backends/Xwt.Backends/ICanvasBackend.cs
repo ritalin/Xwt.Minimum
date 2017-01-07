@@ -72,5 +72,13 @@ namespace Xwt.Backends
 		/// </param>
 		void OnDraw (object context, Rectangle dirtyRect);
 	}
+
+    namespace CanvasEventSink 
+    {
+        public class Default : WidgetEventSink.Default, ICanvasEventSink
+        {
+            public void OnDraw (object context, Rectangle dirtyRect) {}
+        }
+    }
 }
 

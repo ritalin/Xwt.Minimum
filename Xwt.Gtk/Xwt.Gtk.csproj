@@ -50,6 +50,8 @@
     <Compile Include="Xwt.Gtk\WindowBackend.cs" />
     <Compile Include="Xwt.Gtk\WindowFrameBackend.cs" />
     <Compile Include="Xwt.Gtk\IConstraintProvider.cs" />
+    <Compile Include="Xwt.Gtk\MenuBackend.cs" />
+    <Compile Include="Xwt.Gtk\MenuItemBackend.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Xwt.Backends\Xwt.Backends.csproj">
