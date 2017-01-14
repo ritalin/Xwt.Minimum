@@ -23,9 +23,24 @@ namespace GtkTest
                     // Connecting to event sink
                     wb.Initialize (new Xwt.Backends.WindowFrameEventSink.Default ());
 
-                    wb.BackgroundColor = Colors.Red;
+                    //wb.BackgroundColor = Colors.Red;
 
                     wb.SetSize (600, 400);
+
+                    IWidgetContainerBackend container = new WidgetContainerBackend ();
+                    container.InitializeBackend (null, ctx);
+                    container.Initialize (new Xwt.Backends.CanvasEventSink.Default ());
+                    container.BackgroundColor = Colors.Blue;
+                    container.BoundsRequest = new Rectangle (0, 0, 600, 400); // ContentViewの制約は有効にならない
+
+                    wb.SetChild (container, false);
+
+                    IWidgetContainerBackend box = new WidgetContainerBackend ();
+                    box.InitializeBackend (null, ctx);
+                    box.Initialize (new Xwt.Backends.WidgetEventSink.Default ());
+                    box.BackgroundColor = Colors.Lime;
+                    box.BoundsRequest = (new Rectangle (16, 16, 568, 368));
+                    container.AddChild (box);
 
                     PopulateMenu (ctx, wb);
 

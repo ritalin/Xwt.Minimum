@@ -93,14 +93,12 @@ namespace Xwt.Backends
 		/// <value>The size.</value>
 		Size Size { get; }
 
-        void AddChild (IWidgetBackend child);
-
-		/// <summary>
-		/// Converts widget relative coordinates to screen coordinates.
-		/// </summary>
-		/// <returns>The screen coordinates.</returns>
-		/// <param name="widgetCoordinates">The relative widget coordinates.</param>
-		Point ConvertToScreenCoordinates (Point widgetCoordinates);
+        /// <summary>
+        /// Converts widget relative coordinates to screen coordinates.
+        /// </summary>
+        /// <returns>The screen coordinates.</returns>
+        /// <param name="widgetCoordinates">The relative widget coordinates.</param>
+        Point ConvertToScreenCoordinates (Point widgetCoordinates);
 		
 		/// <summary>
 		/// Sets the minimum size of the widget
@@ -125,7 +123,7 @@ namespace Xwt.Backends
         /// Sets the bounds request of this widget.
         /// </summary>
         /// <param name="bounds">Natural bounds.</param>
-        void SetBoundsRequest (Rectangle bounds);
+        Rectangle BoundsRequest { get; set; }
 
         /// <summary>
         /// Reallangement this widget layout.
@@ -156,8 +154,6 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <value>The native widget.</value>
 		object NativeWidget { get; }
-
-        IEnumerable<IWidgetBackend> Children { get; }
 #if false
         /// <summary>
         /// Starts a drag operation originated in this widget

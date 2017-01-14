@@ -52,6 +52,11 @@
     <Compile Include="Xwt.Gtk\IConstraintProvider.cs" />
     <Compile Include="Xwt.Gtk\MenuBackend.cs" />
     <Compile Include="Xwt.Gtk\MenuItemBackend.cs" />
+    <Compile Include="Xwt.Gtk\WidgetContainerBackend.cs" />
+    <Compile Include="Xwt.Gtk\BoxBackendGtk2.cs" />
+    <Compile Include="Xwt.Gtk\WidgetBackend.cs" />
+    <Compile Include="Xwt.Gtk\WidgetBackendGtk2.cs" />
+    <Compile Include="Xwt.Gtk\BoxBackend.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Xwt.Backends\Xwt.Backends.csproj">
@@ -61,6 +66,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Xwt.Gtk\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Xwt.Gtk.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

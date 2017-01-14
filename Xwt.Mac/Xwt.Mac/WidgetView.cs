@@ -87,9 +87,9 @@ namespace Xwt.Mac
 				CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
 
                 //fill BackgroundColor
-                #if false
-                ctx.SetFillColor (Backend.Frontend.BackgroundColor.ToCGColor ());
-				#endif
+
+                ctx.SetFillColor (this.Layer.BackgroundColor);
+				
 				ctx.FillRect (Bounds);
 			}
 		}

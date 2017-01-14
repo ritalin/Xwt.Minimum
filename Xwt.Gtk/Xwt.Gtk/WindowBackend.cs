@@ -77,8 +77,8 @@ namespace Xwt.GtkBackend
                 WidgetBackend.RemoveChildPlacement (alignment.Child);
                 alignment.Remove (alignment.Child);
             }
+#endif
             alignment.Child = WidgetBackend.GetWidgetWithPlacement (child, needAlignment);
-			#endif
 		}
 		
 		public virtual void UpdateChildPlacement (IWidgetBackend childBackend, bool needAlignment)

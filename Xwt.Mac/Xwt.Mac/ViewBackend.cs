@@ -126,6 +126,11 @@ namespace Xwt.Mac
             viewObject.Backend = this;
         }
 
+        public override void LoadView ()
+        {
+            this.View = viewObject.View;
+        }
+
 #if false
         /// <summary>
         /// To be called when the widget is a root and is not inside a Xwt window. For example, when it is in a popover or a tooltip
@@ -179,17 +184,6 @@ namespace Xwt.Mac
             return this.View.Subviews
                        .Where(v => backendLookup.ContainsKey(v))
                        .Select (v => backendLookup [v]);
-        }
-
-        void IWidgetBackend.AddChild(IWidgetBackend child) 
-        {
-            var v = child as IViewObject;
-            Debug.Assert (v != null);
-
-            v.Backend.parentBackend = new WeakReference<IViewObject> (this);
-            this.View.AddSubview (v.Backend.View);
-
-            backendLookup.Add (v.Backend.View, v);
         }
 
 		public NSView Widget {
@@ -436,15 +430,42 @@ namespace Xwt.Mac
 		}
 #endif
 
+        public void AddChild (IWidgetBackend child)
+        {
+            var v = child as IViewObject;
+            Debug.Assert (v != null);
+
+            v.Backend.parentBackend = new WeakReference<IViewObject> (this);
+            this.View.AddSubview (v.Backend.View);
+
+            backendLookup.Add (v.View, v);
+        }
+
+        public void RemoveChild (IWidgetBackend child)
+        {
+            var v = child as IViewObject;
+            Debug.Assert (v != null);
+
+            if (v.View.Superview != this.View) {
+                throw new InvalidOperationException ("Widget is not a child of this container");
+            }
+
+            v.View.RemoveFromSuperview ();
+            v.Backend.parentBackend = null;
+            backendLookup.Remove (v.View);
+        }
+
+#if false
         public static void RemoveChildPlacement (NSView w)
-		{
-			if (w == null)
-				return;
-			if (w is WidgetPlacementWrapper) {
-				var wp = (WidgetPlacementWrapper)w;
-				wp.Subviews [0].RemoveFromSuperview ();
-			}
-		}
+        {
+            if (w == null)
+                return;
+            if (w is WidgetPlacementWrapper) {
+                var wp = (WidgetPlacementWrapper)w;
+                wp.Subviews [0].RemoveFromSuperview ();
+            }
+        }
+        #endif
 
         #if false
         static bool NeedsAlignmentWrapper (Widget fw)
@@ -623,7 +644,7 @@ namespace Xwt.Mac
             }
         }
 
-        public virtual void ReallocateInternal (IViewObject targetView) {
+        protected virtual void ReallocateInternal (IViewObject targetView) {
 
             /* マージン付きFit */
 #if false

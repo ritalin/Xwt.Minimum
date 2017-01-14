@@ -51,15 +51,17 @@ namespace Xwt.Backends
         /// </param>
         /// <exception cref="System.InvalidOperationException">If the widget is not a child of this canvas</exception>
         void SetChildBounds (IWidgetBackend widget, Rectangle bounds);
-		
-		/// <summary>
-		/// Removes a child widget
-		/// </summary>
-		/// <param name='widget'>
-		/// The widget to remove. The widget must have been previously added using AddChild.
-		/// </param>
-		/// <exception cref="System.InvalidOperationException">If the widget is not a child of this canvas</exception>
-		void RemoveChild (IWidgetBackend widget);
+
+#if false
+        /// <summary>
+        /// Removes a child widget
+        /// </summary>
+        /// <param name='widget'>
+        /// The widget to remove. The widget must have been previously added using AddChild.
+        /// </param>
+        /// <exception cref="System.InvalidOperationException">If the widget is not a child of this canvas</exception>
+        void RemoveChild (IWidgetBackend widget);
+		#endif
 	}
 	
 	public interface ICanvasEventSink: IWidgetEventSink

@@ -45,7 +45,6 @@ namespace Xwt.Mac
 	{
 		NSMenuItem item;
 		IMenuItemEventSink eventSink;
-		List<MenuItemEvent> enabledEvents;
 		ApplicationContext context;
 		string label;
 		bool useMnemonic;

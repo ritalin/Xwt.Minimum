@@ -76,6 +76,8 @@
     <Compile Include="Xwt\IconSize.cs" />
     <Compile Include="Xwt\ModifierKeys.cs" />
     <Compile Include="Xwt.Backends\TextLayoutBackendHandler.cs" />
+    <Compile Include="Xwt.Backends\IBoxBackend.cs" />
+    <Compile Include="Xwt.Backends\IWidgetContainerBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -61,11 +61,6 @@ namespace Xwt.Mac
 			Widget.SetButtonType (NSButtonType.MomentaryPushIn);
 		}
 
-        public override void LoadView()
-        {
-            this.View = buttonView;    
-        }
-
         protected override void InitializeEventInternal ()
         {
             this.RegisterOnClick (delegate (object sender, EventArgs args) {

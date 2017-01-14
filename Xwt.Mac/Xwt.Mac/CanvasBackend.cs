@@ -57,11 +57,6 @@ namespace Xwt.Mac
             this.InitializeViewObject (viewObject);
         }
 
-        public override void LoadView ()
-        {
-            this.View = viewObject;
-        }
-
         protected override void OnSizeToFit ()
         {
 #if false
@@ -103,17 +98,15 @@ namespace Xwt.Mac
             v.View.Frame = new CGRect ((nfloat)rect.X, (nfloat)rect.Y, (nfloat)rect.Width, (nfloat)rect.Height); ;
             v.View.NeedsDisplay = true;
 		}
-#endif
 
         public void RemoveChild (IWidgetBackend widget)
         {
             var v = widget as IViewObject;
             Debug.Assert (v != null);
-#if false
             var v = GetWidget (widget);
-#endif
             v.View.RemoveFromSuperview ();
         }
+#endif
 
         public void SetChildBounds (IWidgetBackend widget, Rectangle rect)
         {
@@ -128,7 +121,7 @@ namespace Xwt.Mac
             v.View.NeedsDisplay = true;
         }
 
-        public override void ReallocateInternal (IViewObject targetView)
+        protected override void ReallocateInternal (IViewObject targetView)
         {
             // TODO: 共通化を検討する
             base.ReallocateInternal (targetView);

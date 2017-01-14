@@ -75,11 +75,6 @@ namespace Xwt.Mac
             this.Widget.Cell.Scrollable = false;
 		}
 
-        public override void LoadView ()
-        {
-            this.View = textContainer.View;
-        }
-
         public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			var r = new CGRect (0, 0, widthConstraint.IsConstrained ? (float)widthConstraint.AvailableSize : float.MaxValue, heightConstraint.IsConstrained ? (float)heightConstraint.AvailableSize : float.MaxValue);
