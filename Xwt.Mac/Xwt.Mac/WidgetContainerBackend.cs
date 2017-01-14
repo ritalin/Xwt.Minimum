@@ -39,11 +39,11 @@ using CoreGraphics;
 
 namespace Xwt.Mac
 {
-	public class BoxBackend: ViewBackend<NSView,IWidgetEventSink>, IBoxBackend
+    public class WidgetContainerBackend: ViewBackend<NSView,IWidgetEventSink>, IWidgetContainerBackend
 	{
         WidgetView viewObject;
 
-		public BoxBackend ()
+		public WidgetContainerBackend ()
 		{
 		}
 

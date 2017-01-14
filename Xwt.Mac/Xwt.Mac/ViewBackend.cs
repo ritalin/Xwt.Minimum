@@ -617,13 +617,13 @@ namespace Xwt.Mac
             // Nothing to do
         }
 #endif
-        public void SetBoundsRequest (Rectangle bounds)
-        {
-            requestBounds = bounds;
-        }
-        public Rectangle GetBoundsRequest()
-        {
-            return requestBounds;
+        public Rectangle BoundsRequest {
+            get {
+                return requestBounds;
+            }
+            set {
+                requestBounds = value;
+            }
         }
 
         /// <summary>
@@ -681,7 +681,7 @@ namespace Xwt.Mac
             this.View.AddConstraint (this.NewEdgeConstraint (NSLayoutAttribute.Width, null, targetView.View, 75));
 
 #endif
-            var bounds = targetView.Backend.GetBoundsRequest ();
+            var bounds = targetView.Backend.BoundsRequest;
 
             this.View.AddConstraint (EdgeConstraintFactory.Simple (NSLayoutAttribute.Left, this.View, targetView.View, bounds.Left));
             this.View.AddConstraint (EdgeConstraintFactory.Simple (NSLayoutAttribute.Top, this.View, targetView.View, bounds.Top));

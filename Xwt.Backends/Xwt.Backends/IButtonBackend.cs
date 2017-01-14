@@ -34,10 +34,11 @@ namespace Xwt.Backends
 		void SetButtonStyle (ButtonStyle style);
 		void SetButtonType (ButtonType type);
 #if false
-        void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition position);
+        void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition position, ButtonType type);
 #endif
         void SetContent (string label, bool useMnemonic, ButtonType type);
 
+        ButtonType ButtonType { get; set; }
         string Text { get; set; }
 
         IButtonEventSink EventSink { get; }

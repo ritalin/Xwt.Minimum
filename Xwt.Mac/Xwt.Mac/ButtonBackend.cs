@@ -103,23 +103,31 @@ namespace Xwt.Mac
         }
 		#endif
 
+        public ButtonType ButtonType { 
+            get {
+                return currentType;
+            } 
+            set {
+                this.SetButtonType (value);
+            } 
+        }
+
         string IButtonBackend.Text { 
             get { return this.Widget.Title; } 
-            set { this.SetContent (value, true); } 
+            set { this.SetContent (value, true, this.ButtonType); } 
         }
 
 #if false
-        public void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition imagePosition)
-        #endif
-        public void SetContent (string label, bool useMnemonic)
+        public void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition imagePosition, ButtonType type)
+#endif
+        public void SetContent (string label, bool useMnemonic, ButtonType type)
 		{
-#if false
-            switch (((Button)Frontend).Type) {
+            switch (type) {
             case ButtonType.Help:
             case ButtonType.Disclosure:
                 return;
             }
-			#endif
+
 			if (useMnemonic)
 				label = label.RemoveMnemonic ();
 			Widget.Title = label ?? "";
