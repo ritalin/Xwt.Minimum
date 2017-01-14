@@ -119,7 +119,7 @@ namespace Xwt.GtkBackend
 				}
                 widget = value;
 
-                if (eventBox == null) {
+                if (this.NeedsEventBox && (eventBox == null)) {
                     this.AllocEventBox (value.Visible);
                 }
             }
@@ -127,7 +127,7 @@ namespace Xwt.GtkBackend
 		
 		public Gtk.Widget RootWidget {
 			get {
-				return eventBox;
+                return this.NeedsEventBox ? eventBox : widget;
 			}
 		}
 

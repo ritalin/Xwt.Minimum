@@ -76,11 +76,12 @@ namespace GtkTest
             }
         }
 
+        private static int countedValue;
+
         private static void ComposeItems (ApplicationContext ctx, IWidgetContainerBackend contaner)
         {
             ILabelBackend label = new LabelBackend ();
             label.InitializeBackend (null, ctx);
-            label.Initialize (null);
             label.Initialize (new Xwt.Backends.WidgetEventSink.Default ());
 
             label.Text = "Hello minimum xwt";
@@ -95,6 +96,38 @@ namespace GtkTest
             countLabel.BackgroundColor = Colors.LightSkyBlue;
             countLabel.BoundsRequest = (new Rectangle (8, 42, 120, 30)); // TODO: AutoResizing
             contaner.AddChild (countLabel);
+
+            countedValue = 0;
+
+            // Upボタン
+            IButtonBackend up = new ButtonBackend ();
+            up.InitializeBackend (null, ctx);
+            up.Initialize (new Xwt.Backends.ButtonEventSink.Default ());
+
+            up.Text = "Count up";
+            up.BoundsRequest = (new Rectangle (8, 320, 120, 30)); // TODO: AutoResizing
+            up.EventSink.OnClicked.Register (
+                (obj) => {
+                    ++countedValue;
+                    countLabel.Text = countedValue.ToString ();
+                }
+            );
+            contaner.AddChild (up);
+
+            // Resetボタン
+            IButtonBackend reset = new ButtonBackend ();
+            reset.InitializeBackend (null, ctx);
+            reset.Initialize (new Xwt.Backends.ButtonEventSink.Default ());
+
+            reset.Text = "Reset";
+            reset.BoundsRequest = (new Rectangle (132, 320, 120, 30)); // TODO: AutoResizing
+            reset.EventSink.OnClicked.Register (
+                (obj) => {
+                    countedValue = 0;
+                    countLabel.Text = "-";
+                }
+            );
+            contaner.AddChild (reset);
         }
 
         private static void PopulateMenu (ApplicationContext ctx, IWindowBackend wb)

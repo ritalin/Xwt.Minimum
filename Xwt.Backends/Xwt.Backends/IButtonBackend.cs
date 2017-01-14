@@ -36,7 +36,7 @@ namespace Xwt.Backends
 #if false
         void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition position);
 #endif
-        void SetContent (string label, bool useMnemonic);
+        void SetContent (string label, bool useMnemonic, ButtonType type);
 
         string Text { get; set; }
 

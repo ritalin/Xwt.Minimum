@@ -59,6 +59,8 @@
     <Compile Include="Xwt.Gtk\BoxBackend.cs" />
     <Compile Include="Xwt.Gtk\LabelBackend.cs" />
     <Compile Include="Xwt.Gtk\LabelBackendGtk2.cs" />
+    <Compile Include="Xwt.Gtk\ButtonBackend.cs" />
+    <Compile Include="Xwt.Gtk\ButtonBackendGtk2.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Xwt.Backends\Xwt.Backends.csproj">
