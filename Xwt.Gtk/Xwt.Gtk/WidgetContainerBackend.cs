@@ -65,12 +65,17 @@ namespace Xwt.GtkBackend
 		
 		public void AddChild (IWidgetBackend widget)
 		{
+
+            if (widget is ILabelBackend) {
+                //widget.Visible = true;
+            }
+
             var w = GetWidget (widget);
             //this.Container.AddChild (GetWidget (widget), widget);
             container.AddChild (w, widget.BoundsRequest);
 
             childrenLookup.Add (w, widget);
-		}
+        }
 
 		public void RemoveChild (IWidgetBackend widget)
 		{

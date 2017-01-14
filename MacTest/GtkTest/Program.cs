@@ -42,6 +42,9 @@ namespace GtkTest
                     box.BoundsRequest = (new Rectangle (16, 16, 568, 368));
                     container.AddChild (box);
 
+                    // --
+
+                    ComposeItems (ctx, box);
                     PopulateMenu (ctx, wb);
 
                     wb.EventSink.OnShown.Register (e => {
@@ -71,6 +74,27 @@ namespace GtkTest
                     engine.RunApplication ();
                 }
             }
+        }
+
+        private static void ComposeItems (ApplicationContext ctx, IWidgetContainerBackend contaner)
+        {
+            ILabelBackend label = new LabelBackend ();
+            label.InitializeBackend (null, ctx);
+            label.Initialize (null);
+            label.Initialize (new Xwt.Backends.WidgetEventSink.Default ());
+
+            label.Text = "Hello minimum xwt";
+            label.BackgroundColor = Colors.LightSkyBlue;
+            label.BoundsRequest = (new Rectangle (8, 8, 120, 30)); // TODO: AutoResizing
+            contaner.AddChild (label);
+
+            ILabelBackend countLabel = new LabelBackend ();
+            countLabel.InitializeBackend (null, ctx);
+            countLabel.Initialize (new Xwt.Backends.WidgetEventSink.Default ());
+            countLabel.Text = "-";
+            countLabel.BackgroundColor = Colors.LightSkyBlue;
+            countLabel.BoundsRequest = (new Rectangle (8, 42, 120, 30)); // TODO: AutoResizing
+            contaner.AddChild (countLabel);
         }
 
         private static void PopulateMenu (ApplicationContext ctx, IWindowBackend wb)
